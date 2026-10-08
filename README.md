@@ -29,7 +29,7 @@ başlayacağın bir başlangıç şablonudur.**
 - [Vitrin neyi gösteriyor](#vitrin-neyi-gösteriyor)
 - [Bileşen referansı](#bileşen-referansı)
 - [Tema jetonları](#tema-jetonları)
-- [İkonlar](#ikonlar)
+- [Vektör ikonlar](#vektör-ikonlar)
 - [Arka plan efektleri](#arka-plan-efektleri)
 - [Bildirimler](#bildirimler)
 - [Marka resmi](#marka-resmi)
@@ -342,13 +342,13 @@ Derleyici uyarmaz, hata da vermez, metin sadece çizilmez.
 `Micro 1.2` (büyük harfli mikro etiketler), `Wide 3.0` (display metni). Piksel
 değeri; `px(theme::track::Micro)` ile geçirilir.
 
-## İkonlar
+## Vektör ikonlar
 
 `icons::Draw(dl, icon, center, size, col, thickness = 0)` — hepsi `ImDrawList`
 ile çizilir, ikon fontu gerektirmez. `thickness = 0` boyuta göre otomatik
 seçilir; ince işçilik için elle ver (ör. `px(1.5f)`).
 
-`enum class Icon` sırası (İkonlar sayfasında tek tek gösterilir):
+`enum class Icon` sırası (vitrinde Tipografi sayfasının altında tek tek gösterilir):
 
 ```
 Dashboard  Cleaner  Tweaks  Network  Settings  Key      User     Logout
