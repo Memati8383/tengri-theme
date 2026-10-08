@@ -41,6 +41,9 @@ function Read-Src {
         $p = Join-Path $root $f
         if (Test-Path -LiteralPath $p) { $text += (Get-Content -Raw -LiteralPath $p) }
     }
+    # Yorumlar cikarilir: bir sembolu yoruma yazip "kullanimis" sayilmamali.
+    $text = $text -replace '/\*[\s\S]*?\*/', ' '
+    $text = ($text -split "`n" | ForEach-Object { $_ -replace '//.*$', '' }) -join "`n"
     return $text
 }
 

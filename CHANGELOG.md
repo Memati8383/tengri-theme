@@ -3,6 +3,17 @@
 Biçim [Keep a Changelog](https://keepachangelog.com/tr/1.1.0/)'a, sürümleme
 [SemVer](https://semver.org/lang/tr-TR/)'e göre.
 
+## [Unreleased]
+
+### Değişti
+
+- `tools/check_showcase.ps1` çağrı aradığı metni yorumlardan arındırıyor: bir
+  sembolün adını yoruma yazmak artık kapıyı geçirmiyor. Kapsama değişmedi
+  (48 sembol, 0 eksik) ve sayım betikten bağımsız ikinci bir çözümleyiciyle
+  doğrulandı. Yürütülebilirleri etkilemez; v1.1.0 artefaktları geçerli.
+
+[Unreleased]: https://github.com/Memati8383/tengri-theme/compare/v1.1.0...HEAD
+
 ## [1.1.0] — 2026-10-08
 
 ### Eklendi

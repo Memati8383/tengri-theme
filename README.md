@@ -203,7 +203,9 @@ Beş sayfa, temada dışarıda kalan tek bir API bırakmıyor. Bu bir iddia değ
 CI'da çalışan bir kapı: `tools/check_showcase.ps1` başlık dosyalarındaki her
 public bildirimi toplar ve `src/demo.cpp` ya da `src/app/shell.cpp` içinde
 çağrıldığını arar; biri eksikse iş akımı kırmızıya döner. Ölçüm: **48 benzersiz
-public sembol, 0 eksik.**
+public sembol, 0 eksik** — sayım, betikten bağımsız ikinci bir çözümleyiciyle de
+doğrulandı. Çağrı sayılan metin yorumlardan arındırılır, yani bir sembolü yoruma
+yazmak kapıyı geçirmiyor.
 
 | Sayfa | Kapsadığı API |
 |---|---|
