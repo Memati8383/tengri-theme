@@ -633,18 +633,25 @@ artefaktlarıdır: `gh release create` artefaktı indirdikten sonra yükler, yan
 yayınlanan dosyalar `windows-latest` araç setinde üretilir; geliştirme
 masasındaki derlemeden elle yüklenmez.
 
-Bu, dosyaların bit bit yeniden üretilebilir olduğu anlamına **gelmez**. PE
-başlığındaki `TimeDateStamp` her derlemede değişir, ayrıca CI'daki araç seti ile
-yerel BuildTools çıktısı bayt sayısı bakımından farklılaşabiliyor (ölçüldü:
-vitrin exe'sinde 2048 bayt). Sağlama değerleri bu yüzden sürüm anındaki
-artefaktlara aittir; kendi derlemenden aynı hash'i beklemeyi.
+Derleme **aynı araç setiyle** bayt bayt yeniden üretilebilir: linker `/Brepro`
+alır, PE başlığındaki `TimeDateStamp` sabitlenir. Ölçüldü — `build/` iki kez
+silinip derlendi, iki exe de `cmp` ile birebir aynı çıktı (SHA-256
+`TengriApp 5f90019a…`, `TengriThemePreview 3a3e6883…`).
+
+Bu, başka bir makinenin aynı hash'i vereceği anlamına gelmez. Aynı commit'in CI
+çıktısı ile yerel çıktı karşılaştırıldı: `TengriApp.exe` aynı boyutta ama
+862.208 baytın 786.701'i farklı; vitrin exe'i ise 973.312 bayt, yani yerel
+971.264'ten 2.048 bayt büyük. Fark zaman damgasından değil, derleyici sürümünden
+kod üretimine kadar uzanan araç seti farkından geliyor.
 
 ```bat
 certutil -hashfile TengriThemePreview.exe SHA256
 ```
 
-Sürüm notlarının altında her iki exe için SHA-256 listelenir; indirdiğin dosya
-listeye uyuyorsa yayınlanan commit'in CI çıktısıdır.
+Sağlama değerleri sürüm notlarında her iki exe için listelenir ve **o sürümün CI
+artefaktına** aittir: indirdiğin dosya listeye uyuyorsa yayınlanan commit'in CI
+çıktısıdır. Kendi derlemenden aynı hash'i beklemek ancak aynı araç seti
+sürümünü kullanıyorsan anlamlıdır.
 
 ## Kaynak varlıklarını yenileme
 
