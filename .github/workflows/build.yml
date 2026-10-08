@@ -1,0 +1,34 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  msvc:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # build.bat kendi vcvars64 yolunu vswhere ile buluyor; ek bir adım gerekmez.
+      - name: build.bat (cl + /MT, iki calistirilabilir)
+        run: cmd /c build.bat
+
+      - name: CMake + ctest
+        run: |
+          cmake -S . -B build_cmake -G "Visual Studio 17 2022"
+          cmake --build build_cmake --config Release
+          ctest --build-config Release --test-dir build_cmake
+
+      - name: Unit testleri (kenar seridi hesabi)
+        run: cmd /c tests\run_tests.bat
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tengri-theme-msvc
+          path: |
+            build/TengriApp.exe
+            build/TengriThemePreview.exe
+          if-no-files-found: error
