@@ -10,7 +10,13 @@ Biçim [Keep a Changelog](https://keepachangelog.com/tr/1.1.0/)'a, sürümleme
 - `tools/check_showcase.ps1` çağrı aradığı metni yorumlardan arındırıyor: bir
   sembolün adını yoruma yazmak artık kapıyı geçirmiyor. Kapsama değişmedi
   (48 sembol, 0 eksik) ve sayım betikten bağımsız ikinci bir çözümleyiciyle
-  doğrulandı. Yürütülebilirleri etkilemez; v1.1.0 artefaktları geçerli.
+  doğrulandı.
+- `build.bat` ve CMake linker'a `/Brepro` veriyor: PE başlığındaki
+  `TimeDateStamp` sabitleniyor. Ölçüldü — `build/` dizini iki kez silinip
+  temizlenen derlemeler `TengriApp.exe` ve `TengriThemePreview.exe` için
+  bayt bayt aynı çıktıyı verdi (`cmp` farkı yok, `/W4` uyarı sayısı 0). v1.1.0
+  artefaktları bu bayraktan önce linklendi, yani o sürümün sağlama değerleri
+  tek seferlik birer kimlikti; bir sonraki sürümden itibaren doğrulanabilir.
 
 [Unreleased]: https://github.com/Memati8383/tengri-theme/compare/v1.1.0...HEAD
 

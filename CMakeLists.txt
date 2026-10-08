@@ -60,6 +60,10 @@ foreach(tgt app_scaffold theme_preview)
     target_link_libraries(${tgt} PRIVATE tengri_core)
     # windowscodecs + ole32: gömülü marka PNG'sini WIC ile çözer (gui\logo.cpp)
     target_link_libraries(${tgt} PRIVATE d3d11 dxgi d3dcompiler dwmapi user32 gdi32 shell32 windowscodecs ole32)
+    # build.bat ile aynı ölçüt: PE TimeDateStamp sabit, iki derleme bayt-bayt aynı.
+    if(MSVC)
+        target_link_options(${tgt} PRIVATE /Brepro)
+    endif()
 endforeach()
 
 set_target_properties(app_scaffold  PROPERTIES OUTPUT_NAME "TengriApp")

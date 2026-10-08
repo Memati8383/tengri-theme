@@ -48,6 +48,11 @@ set FLAGS=/nologo /std:c++17 /O2 /MT /EHsc /utf-8 /W4 /MP ^
    /DNDEBUG /DUNICODE /D_UNICODE /DIMGUI_DEFINE_MATH_OPERATORS ^
    /I src /I %IMGUI% /I %IMGUI%\backends
 
+rem /Brepro (linker): PE basligindaki TimeDateStamp'i sabitler. Ayni arac seti ve
+rem ayni kaynak iki derlemede ayni baytlari veriyor; surum varliklarinin saglama
+rem degeri böylece yeniden uretilebilir dogrulanabiliyor.
+set LINKFLAGS=/link /SUBSYSTEM:WINDOWS /Brepro
+
 set LIBS=d3d11.lib dxgi.lib d3dcompiler.lib dwmapi.lib user32.lib gdi32.lib shell32.lib windowscodecs.lib ole32.lib
 
 rem Cekirdek bir kez derlenir; iki yurutulebilir ayni .obj setini linkler,
@@ -73,7 +78,7 @@ for %%F in (%CORE_NAMES%) do set OBJ=!OBJ! build\obj\core\%%F.obj
 
 echo [*] Building build\TengriApp.exe  (senin uygulaman: src\app\my_app.cpp) ...
 cl %FLAGS% src\app\my_app.cpp !OBJ! ^
-   /Fobuild\obj\app\ /link /SUBSYSTEM:WINDOWS %LIBS% /OUT:build\TengriApp.exe
+   /Fobuild\obj\app\ %LINKFLAGS% %LIBS% /OUT:build\TengriApp.exe
 if errorlevel 1 (
     echo [!] Build failed.
     exit /b 1
@@ -81,7 +86,7 @@ if errorlevel 1 (
 
 echo [*] Building build\TengriThemePreview.exe  (tema vitrini: src\demo.cpp) ...
 cl %FLAGS% src\demo.cpp !OBJ! ^
-   /Fobuild\obj\preview\ /link /SUBSYSTEM:WINDOWS %LIBS% /OUT:build\TengriThemePreview.exe
+   /Fobuild\obj\preview\ %LINKFLAGS% %LIBS% /OUT:build\TengriThemePreview.exe
 if errorlevel 1 (
     echo [!] Build failed.
     exit /b 1
