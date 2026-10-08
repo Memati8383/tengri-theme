@@ -25,6 +25,16 @@ jobs:
       - name: Unit testleri (kenar seridi hesabi)
         run: cmd /c tests\run_tests.bat
 
+      # README'deki "vitrin disarida tek bir API birakmiyor" iddiasi burada
+      # olculur: her public sembol demo.cpp veya shell.cpp'de gecmek zorunda.
+      - name: Vitrin kapsama kapisi
+        run: powershell -NoProfile -ExecutionPolicy Bypass -File tools\check_showcase.ps1
+
+      # BOM'suz .ps1'i PowerShell 5.1 ANSI okur; icinden uretilen yorum satirlari
+      # bozuk dogar. Bu adim iki kez kodlanmis UTF-8'i derlemeden once yakalar.
+      - name: Metin kodlama kapisi
+        run: powershell -NoProfile -ExecutionPolicy Bypass -File tools\check_text_encoding.ps1
+
       - uses: actions/upload-artifact@v4
         with:
           name: tengri-theme-msvc

@@ -1,13 +1,13 @@
-// tools/make_brand_icons.ps1 tarafÄ±ndan Ã¼retildi; elle dÃ¼zenlenmemelidir.
+// Marka işaretlerinin üçgen verisi; tek sefer üretilip gömüldü, depoda üreteci yok.
 //
-// HakkÄ±nda sayfasÄ±ndaki marka iÅŸaretlerinin Ã¼Ã§gen listeleri.
+// Hakkında sayfasındaki marka işaretlerinin üçgen listeleri.
 //
-// Ã–nceden Ã¼Ã§genlenmelerinin nedeni: ImDrawList yalnÄ±zca konveks poligon
-// (AddConvexPolyFilled) doldurabiliyor, iÅŸaretler ise konkav. DÃ¼zleÅŸtirmeyi derleme
-// zamanÄ±na bÄ±rakmak, Ã§alÄ±ÅŸma anÄ± maliyetini bir statik dizi Ã¼zerinde dÃ¶ngÃ¼ye indiriyor.
+// Önceden üçgenlenmelerinin nedeni: ImDrawList yalnızca konveks poligon
+// (AddConvexPolyFilled) doldurabiliyor, işaretler ise konkav. Düzleştirmeyi derleme
+// zamanına bırakmak, çalışma anı maliyetini bir statik dizi üzerinde döngüye indiriyor.
 //
-// Koordinatlar viewBox merkezine gÃ¶re -1..1 aralÄ±ÄŸÄ±na normalleÅŸtirilmiÅŸtir; bu tam olarak
-// icons::Draw'Ä±n P() yardÄ±mcÄ±sÄ±nÄ±n beklediÄŸi biÃ§imdir.
+// Koordinatlar viewBox merkezine göre -1..1 aralığına normalleştirilmiştir; bu tam olarak
+// icons::Draw'ın P() yardımcısının beklediği biçimdir.
 
 #include "brand_icons.hpp"
 

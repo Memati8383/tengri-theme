@@ -14,7 +14,7 @@ struct Settings
     bool  mouse     = true;
 };
 
-// Düşen parımcıklar, yıldız geçişi çizgileri, yukarıdan gelen ışık ve periyodik
+// Düşen parçacıklar, yıldız geçişi çizgileri, yukarıdan gelen ışık ve periyodik
 // yukarıdan aşağı ışık süpürmesi.
 namespace fx
 {

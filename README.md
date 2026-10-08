@@ -39,6 +39,7 @@ başlayacağın bir başlangıç şablonudur.**
 - [Pencere: kenarlıksız, DPI, boyutlandırma](#pencere-kenarlıksız-dpi-boyutlandırma)
 - [Temayı hazır bir projeye taşımak](#temayı-hazır-bir-projeye-taşımak)
 - [Testler ve CI](#testler-ve-ci)
+- [Sürüm varlıkları ve sağlama](#sürüm-varlıkları-ve-sağlama)
 - [Kaynak varlıklarını yenileme](#kaynak-varlıklarını-yenileme)
 - [Depo düzeni](#depo-düzeni)
 - [Boyama](#boyama)
@@ -51,17 +52,22 @@ başlayacağın bir başlangıç şablonudur.**
 | Vitrin — Grafikler | Vitrin — Tipografi |
 |---|---|
 | <img src="docs/img/preview-charts.png" width="100%"> | <img src="docs/img/preview-typography.png" width="100%"> |
-| Çizgi grafik, ring, ilerleme çubuğu, spinner | Punto ölçeği, mürekkep seviyeleri, Türkçe glifler |
+| Çizgi grafik, ring, ilerleme çubuğu, spinner, `DrawSwitch` ve marka resminin üç biçimi | Punto ölçeği, mürekkep seviyeleri, Türkçe glifler |
 
 | Vitrin — Efektler + bildirim | Vitrin — yerel ImGui widgetları |
 |---|---|
 | <img src="docs/img/preview-effects.png" width="100%"> | <img src="docs/img/preview-imgui.png" width="100%"> |
-| `fx::settings` ve toaster | checkbox, combo, slider, table, listbox |
+| Üç efekt primitifi, `fx::settings` ve sağ alttaki toaster | checkbox, combo, slider, table, listbox |
 
-| Şablon — Panel | Şablon — onay modalı |
+| Vitrin — onay modalı | Şablon — Panel |
 |---|---|
-| <img src="docs/img/scaffold-panel.png" width="100%"> | <img src="docs/img/scaffold-modal.png" width="100%"> |
-| `TengriApp.exe`: ölçü + canlı grafik + görev satırları | `AlwaysAutoResize` modal, karartılmış arka plan |
+| <img src="docs/img/preview-modal.png" width="100%"> | <img src="docs/img/scaffold-panel.png" width="100%"> |
+| `-modal`: karartılmış arka plan, modal içinde yerel ImGui widgetları | `TengriApp.exe`: ölçü + canlı grafik + görev satırları |
+
+| Şablon — Ayarlar | Şablon — onay modalı |
+|---|---|
+| <img src="docs/img/scaffold-settings.png" width="100%"> | <img src="docs/img/scaffold-modal.png" width="100%"> |
+| `ToggleCard`, `Slider`, `Segmented` ile kurulmuş gerçek bir ayar sayfası | `AlwaysAutoResize` modal, karartılmış arka plan |
 
 Tüm görseller `PrintWindow` ile 1280×800 mantıks ölçekte alındı; fare
 kullanılmadan gösterilebilen durumlar `-page`, `-size`, `-toast`, `-modal`
@@ -80,7 +86,7 @@ bayraklarıyla çağrıldı.
 - Kenarlıksız ama sürüklenebilir ve kenarından boyutlandırılabilir pencere,
   `WM_DPICHANGED` ölçek taşıması, DWM köşe yuvarlatması (Windows 11) ve
   `SetWindowRgn` yedeği.
-- Arka plan efektleri: parçacıklar, yıldız çizgileri, ışma, periyodik süpürme.
+- Arka plan efektleri: parçacıklar, yıldız çizgileri, ışıma, periyodik süpürme.
 - Üç katmanlı mimari: tema (`src/gui`) → kabuk (`src/app/shell`) → içerik
   (`src/app/my_app.cpp` veya `src/demo.cpp`).
 
@@ -193,13 +199,17 @@ Uygulamanı kendi adınla yayınlamak için:
 
 ## Vitrin neyi gösteriyor
 
-Beş sayfa, temada dışarıda kalan tek bir API bırakmıyor:
+Beş sayfa, temada dışarıda kalan tek bir API bırakmıyor. Bu bir iddia değil,
+CI'da çalışan bir kapı: `tools/check_showcase.ps1` başlık dosyalarındaki her
+public bildirimi toplar ve `src/demo.cpp` ya da `src/app/shell.cpp` içinde
+çağrıldığını arar; biri eksikse iş akımı kırmızıya döner. Ölçüm: **48 benzersiz
+public sembol, 0 eksik.**
 
 | Sayfa | Kapsadığı API |
 |---|---|
 | Bileşenler | `Button` (3 stil + ikon + yükleniyor hâli), `ToggleCard`, `CheckRow`, `InputField` (normal + `ImGuiInputTextFlags_Password` ve göz/kaçırma), `Slider`, `SliderInt`, `Segmented`, `SectionLabel`, `Label`; kenar çubuğunda `Tab`, `Card`, `Anim`/`AnimSet` ile kayan seçim göstergesi, üst çubukta `IconButton` (tehlike hâli) |
-| Grafikler | `Graph` (çizgi + alan dolgusu), `Ring`, `ProgressBar`, `Spinner`, `Text`/`TextSize` ile ölçüye göre hizalama |
-| Efektler | `fx::settings` alanları: `particles`, `lines`, `glow`, `sweep`, `mouse`, `count`, `speed`; `Notify` (4 toast türü), `RenderNotifications`, `notificationsEnabled` köprüsü |
+| Grafikler | `Graph` (çizgi + alan dolgusu), `Ring`, `ProgressBar`, `Spinner`, `Text`/`TextSize` ile ölçüye göre hizalama, `DrawSwitch` (canlı anahtar + `on = 0.0/0.5/1.0` ara değerleriyle), `Key`/`Anim` ile hover ve durum yumuşatması, `logo::Draw` / `logo::DrawFitted` / `logo::Tex` + `Ready` üçlüsü |
+| Efektler | `fx::settings` alanları: `particles`, `lines`, `glow`, `sweep`, `mouse`, `count`, `speed`; `RadialGradient`, `GradientQuad`, `Shine` primitifleri; `Notify` (4 toast türü), `RenderNotifications`, `notificationsEnabled` köprüsü |
 | Tipografi | `theme::size::*` punto ölçeği, `theme::ink::*` mürekkep seviyeleri, `theme::track::*` harf aralığı, `TextSpaced`, `fontdata::kRanges` glif kapsamı (Türkçe bloğu üç yüzde de), `icons::Draw` ile tüm ikon listesi |
 | ImGui | `ApplyStyle()` yerel widgetları nasıl boyuyor: checkbox, radio, combo, input, slider, progress bar, tree, listbox, tooltip, popup, modal, tab bar, table, disabled grubu |
 
@@ -314,7 +324,7 @@ seçim yapılamayınca her yeni ihtiyaç yeni bir punto doğurur.
 
 Oranlar `docs/img/preview-components.png` içinden ölçülen gerçek piksellerle
 hesaplandı (WCAG göreli parlaklık, tam alfa varsayımı): kart yüzeyi
-`rgb(13,13,14)`, ışma altında kenar `rgb(23,23,25)`.
+`rgb(13,13,14)`, ışıma altında kenar `rgb(23,23,25)`.
 
 | Rol | Değer | Kart üstünde | Işımalı kenarda |
 |---|---|---|---|
@@ -584,10 +594,55 @@ doğrulamanın dürüst bir yolu yok. Bu yüzden kenar şeridi hesabı
 Test başlıksız ve yan etkisizdir; UI'a, ağa veya kullanıcı verisine erişimi yok.
 
 Aynı hedef CMake tarafında `ctest` ile koşuyor. GitHub Actions
-(`.github/workflows/build.yml`) `windows-latest` üzerinde üç adımı çalıştırır:
-`build.bat`, CMake yapılandırma + derleme + `ctest`, `tests\run_tests.bat`;
-yürütülebilirleri artefakt olarak yükler. Derleme `/W4` sıfır uyarı ölçütüyle
-yapılır.
+(`.github/workflows/build.yml`) `windows-latest` üzerinde beş adımı çalıştırır:
+`build.bat`, CMake yapılandırma + derleme + `ctest`, `tests\run_tests.bat`,
+`tools\check_showcase.ps1`, `tools\check_text_encoding.ps1`; yürütülebilirleri
+artefakt olarak yükler. Derleme `/W4` sıfır uyarı ölçütüyle yapılır.
+
+Vitrin kapsama kapısı ayrıca elle koşulabilir ve tek bir çıktısı var:
+
+```powershell
+powershell -NoProfile -File tools\check_showcase.ps1 -List
+```
+
+`-List` her public sembolü ve `ok`/`MISS` durumunu yazar; kapı başlık
+dosyalarındaki bildirimleri toplar, çağrıyı `src/demo.cpp` + `src/app/shell.cpp`
+içinde arar. `Init`/`Shutdown`/`Frame`/`content` gibi yalnızca can döngüsünde
+yaşayan dört adın muafiyeti betiğin başında açıkça yazar; geri kalan hiçbir ad
+muaf değildir.
+
+İkinci kapı metin kodlamasını denetler:
+
+```powershell
+powershell -NoProfile -File tools\check_text_encoding.ps1
+```
+
+Her metin dosyasının geçerli UTF-8 olduğunu, iki kez kodlanmış UTF-8 izi
+taşımadığını ve `.ps1` dosyalarının BOM ile yazıldığını kontrol eder (bu satır
+yazılırken ölçülen: 36 metin dosyası, 0 kusur). Kural boşuna değil: BOM'suz bir
+üreteç betiğini PowerShell 5.1 CP1254 okuyor, ürettiği `font_data.cpp` /
+`logo_data.cpp` yorum satırları bozuk doğuyordu — üç dosyada tam olarak bu
+bulunup düzeltildi.
+
+## Sürüm varlıkları ve sağlama
+
+Release sayfasındaki iki `.exe`, iş akımının **aynı commit**ten çıkan CI
+artefaktlarıdır: `gh release create` artefaktı indirdikten sonra yükler, yani
+yayınlanan dosyalar `windows-latest` araç setinde üretilir; geliştirme
+masasındaki derlemeden elle yüklenmez.
+
+Bu, dosyaların bit bit yeniden üretilebilir olduğu anlamına **gelmez**. PE
+başlığındaki `TimeDateStamp` her derlemede değişir, ayrıca CI'daki araç seti ile
+yerel BuildTools çıktısı bayt sayısı bakımından farklılaşabiliyor (ölçüldü:
+vitrin exe'sinde 2048 bayt). Sağlama değerleri bu yüzden sürüm anındaki
+artefaktlara aittir; kendi derlemenden aynı hash'i beklemeyi.
+
+```bat
+certutil -hashfile TengriThemePreview.exe SHA256
+```
+
+Sürüm notlarının altında her iki exe için SHA-256 listelenir; indirdiğin dosya
+listeye uyuyorsa yayınlanan commit'in CI çıktısıdır.
 
 ## Kaynak varlıklarını yenileme
 
@@ -614,10 +669,15 @@ yalnızca Latin-1 kapsar ve ğ/İ/ş kutu olarak çizilir. Oklar (U+2192) **yokt
 Tengri-Theme/
 ├── build.bat                 vcvars bul → gömülü varlıkları üret → iki exe linkle
 ├── CMakeLists.txt            tengri_core (OBJECT) + app_scaffold + theme_preview + hit_test
+├── .gitattributes            satır sonu ve ikili dosya politikası (PNG/TTB binary)
+├── CHANGELOG.md              sürümler: ne eklendi, ne ölçüldü
+├── CONTRIBUTING.md           kapıların yerel karşılığı + üretilen dosyalar kuralı
+├── .github/workflows/        build.yml: derleme + ctest + unit test + vitrin kapısı
 ├── docs/img/                 README ekran görüntüleri
 ├── res/                      kaynaklar: Inter alt kümesi (3 yüz) + marka PNG'si
 ├── third_party/imgui/        vendor edilmiş 1.93.0 WIP (yalnızca derlenen dosyalar)
-├── tools/                    make_font_data.ps1, make_logo_data.ps1
+├── tools/                    make_font_data.ps1, make_logo_data.ps1,
+│                             check_showcase.ps1, check_text_encoding.ps1
 ├── tests/                    hit_test.cpp + run_tests.bat
 └── src/
     ├── main.cpp              pencere + D3D11 + DPI + resize; içeriği content()den alır
@@ -633,7 +693,7 @@ Tengri-Theme/
 |---|---|
 | `gui/theme.hpp/.cpp` | Renk ve tipografi jetonları, `ImGuiStyle` uygulaması, gömülü Inter yükleme, DPI ölçeği |
 | `gui/widgets.hpp/.cpp` | Kart, düğme, sekme, toggle, checkbox satırı, input, slider, segment seçici, progress, spinner, ring, grafik, toaster |
-| `gui/fx.hpp/.cpp` | Arka plan efektleri: düşen parçacıklar, yıldız çizgileri, ışma, periyodik süpürme |
+| `gui/fx.hpp/.cpp` | Arka plan efektleri: düşen parçacıklar, yıldız çizgileri, ışıma, periyodik süpürme |
 | `gui/icons.hpp/.cpp` | `ImDrawList` ile çizilen vektör ikonlar |
 | `gui/logo.hpp/.cpp` | Gömülü PNGyi WIC ile çözüp DX11 dokusuna çeviren marka resmi |
 | `gui/font_data.*`, `gui/logo_data.*` | Üretilmiş gömülü bayt tabloları — elle düzenlenmez |
@@ -650,3 +710,6 @@ istersen tek yer `theme::Init()` içindeki stil uygulaması (theme.cpp) ve
 MIT — bkz. [LICENSE](LICENSE). Üçüncü taraf bileşenlerin lisansları
 [NOTICE.md](NOTICE.md) ve `third_party/imgui/LICENSE.txt` içinde kendi
 metinleriyle yürürlüktedir (Dear ImGui: MIT; Inter: SIL OFL 1.1).
+
+Sürüm geçmişi [CHANGELOG.md](CHANGELOG.md) içinde, yerelde koşman gereken
+kapılar [CONTRIBUTING.md](CONTRIBUTING.md) içinde.

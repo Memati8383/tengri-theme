@@ -7,6 +7,7 @@
 #include "gui/fx.hpp"
 #include "gui/widgets.hpp"
 #include "gui/icons.hpp"
+#include "gui/logo.hpp"
 #include "imgui_internal.h"
 #include <windows.h>
 #include <cmath>
@@ -32,8 +33,10 @@ namespace demo
         float  g_history[64] = {};
         float  g_progress    = 0.0f;
         bool   g_working     = false;
+        bool   g_switch      = true;
         double g_workStart   = 0.0;
         const char* kModes[] = { "Dengeli", "Performans", "Sessiz" };
+        const char* kPrimNames[] = { "RadialGradient", "GradientQuad", "Shine" };
 
         // ---- yerel ImGui bilesenleri icin durum -----------------------------
         bool   g_native_check  = true;
@@ -131,7 +134,7 @@ namespace demo
             // listesinde ve iceriğin arkasinda kalir.
             ImDrawList* dl = ImGui::GetWindowDrawList();
             const ImVec2 gp = ImGui::GetCursorScreenPos();
-            const ImVec2 gs = ImVec2(inner, px(140));
+            const ImVec2 gs = ImVec2(inner, px(118));
             ui::Graph(dl, gp, gp + gs, g_history, 64, 0.0f, 1.0f, 1.0f);
             ImGui::Dummy(gs);
             ui::EndCard();
@@ -159,11 +162,108 @@ namespace demo
             ui::Label(theme::fonts.regular, theme::size::Caption, theme::ink::Tertiary, "İşlem sürüyor");
             ImGui::Dummy(ImVec2(0, px(24)));
             ui::EndCard();
+
+            ImGui::Dummy(ImVec2(0, px(16)));
+
+            ui::BeginCard("##card_switch", w, "Switch",
+                          "DrawSwitch tek başına çizilir; Key aynı öğenin hover ve değerini ayrı yumuşatır.");
+            dl = ImGui::GetWindowDrawList();
+            const ImVec2 sp = ImGui::GetCursorScreenPos();
+            if (ImGui::InvisibleButton("##sw_live", ImVec2(px(38), px(21))))
+                g_switch = !g_switch;
+            const ImGuiID swId  = ImGui::GetItemID();
+            const float   swHov = ui::Anim(ui::Key(swId, "hover"), ImGui::IsItemHovered() ? 1.0f : 0.0f);
+            const float   swOn  = ui::Anim(ui::Key(swId, "state"), g_switch ? 1.0f : 0.0f);
+            ui::DrawSwitch(dl, sp, swOn, swHov);
+            ui::Text(dl, theme::fonts.regular, theme::size::Body, sp + ImVec2(px(50), px(3)),
+                     theme::Gray(theme::ink::Secondary),
+                     g_switch ? "Açık — anahtara tıkla" : "Kapalı — anahtara tıkla");
+
+            // `on` float olduğu için ara değer de geçerlidir: geçiş anının kendisi.
+            for (int i = 0; i < 3; ++i)
+            {
+                const float  t = (float)i * 0.5f;
+                const ImVec2 p = sp + ImVec2(px(250) + i * (px(38) + px(34)), 0);
+                ui::DrawSwitch(dl, p, t, 0.0f);
+                char lab[24];
+                snprintf(lab, sizeof(lab), "on = %.1f", t);
+                ui::Text(dl, theme::fonts.regular, theme::size::Meta, p + ImVec2(px(2), px(26)),
+                         theme::Gray(theme::ink::Tertiary), lab);
+            }
+            ImGui::Dummy(ImVec2(inner, px(48)));
+            ui::EndCard();
+
+            ImGui::Dummy(ImVec2(0, px(16)));
+
+            ui::BeginCard("##card_logo", w, "Marka resmi",
+                          "Aynı doku üç biçimde: Draw gerer, DrawFitted sığdırır, Tex ham çizime verir.");
+            dl = ImGui::GetWindowDrawList();
+            const ImVec2 bp = ImGui::GetCursorScreenPos();
+            const float  bw2 = inner / 3.0f;
+            const float  bh  = px(62);
+            const ImU32  tint = theme::White(1.0f);
+            const ImVec2 a0 = bp + ImVec2(px(6), 0),      a1 = bp + ImVec2(bw2 - px(6), bh);
+            const ImVec2 b0 = bp + ImVec2(bw2 + px(6), 0), b1 = bp + ImVec2(2 * bw2 - px(6), bh);
+            const ImVec2 c0 = bp + ImVec2(2 * bw2 + px(6), 0), c1 = bp + ImVec2(inner - px(6), bh);
+            logo::Draw(dl, a0, a1, tint);
+            logo::DrawFitted(dl, b0, b1, px(6), tint);
+            if (logo::Ready())
+                dl->AddImage(reinterpret_cast<ImTextureID>(logo::Tex()), c0, c1,
+                             ImVec2(0, 0), ImVec2(1, 1), tint);
+            const char* kLogoNames[] = { "Draw", "DrawFitted", "Tex + AddImage" };
+            const ImVec2 kLogoMn[] = { a0, b0, c0 };
+            for (int i = 0; i < 3; ++i)
+                ui::Text(dl, theme::fonts.regular, theme::size::Meta,
+                         ImVec2(kLogoMn[i].x, bp.y + bh + px(6)),
+                         theme::Gray(theme::ink::Tertiary), kLogoNames[i]);
+            ImGui::Dummy(ImVec2(inner, bh + px(22)));
+            ui::EndCard();
         }
 
         void DrawEffects(float w)
         {
             const float inner = w - px(36);
+
+            // fx'in üç primitifi: tema yüzeyleri bunlarla kuruluyor, vitrin de
+            // tek tek gösteriyor.
+            ui::BeginCard("##card_fx_prims", w, "Efekt primitifleri",
+                          "RadialGradient, GradientQuad ve Shine — ışığın üç hâli.");
+            ImDrawList* dl = ImGui::GetWindowDrawList();
+            const ImVec2 op = ImGui::GetCursorScreenPos();
+            const float  cw = inner / 3.0f;
+            const float  ch = px(92);
+            for (int i = 0; i < 3; ++i)
+            {
+                const ImVec2 mn = op + ImVec2(cw * i + px(6), 0);
+                const ImVec2 mx = op + ImVec2(cw * (i + 1) - px(6), ch);
+                const ImVec2 ct = (mn + mx) * 0.5f;
+                if (i == 0)
+                {
+                    fx::RadialGradient(dl, ct, (mx.x - mn.x) * 0.5f, (mx.y - mn.y) * 0.5f,
+                                       theme::White(0.42f), theme::White(0.0f), 32);
+                }
+                else if (i == 1)
+                {
+                    // dört köşe ayrı alpha: kart yüzeyinin yumuşak geçişi bu primitifle çizilir
+                    fx::GradientQuad(dl, mn, ImVec2(mx.x, mn.y), mx, ImVec2(mn.x, mx.y),
+                                     theme::White(0.34f), theme::White(0.04f),
+                                     theme::White(0.16f), theme::White(0.02f));
+                }
+                else
+                {
+                    // Shine: t 0..1 arasında gezinen ışık bandı
+                    const float t = 0.5f + 0.5f * sinf((float)ImGui::GetTime() * 1.1f);
+                    fx::Shine(dl, mn, mx, t, theme::White(0.30f));
+                }
+                ui::Text(dl, theme::fonts.regular, theme::size::Meta,
+                         ImVec2(mn.x, mx.y + px(6)), theme::Gray(theme::ink::Tertiary),
+                         kPrimNames[i]);
+            }
+            ImGui::Dummy(ImVec2(inner, ch + px(22)));
+            ui::EndCard();
+
+            ImGui::Dummy(ImVec2(0, px(16)));
+
             ui::BeginCard("##card_fx", w, "Arka plan efektleri", "Efekt ayarları tek Settings yapısında toplanır.");
             ui::ToggleCard("Parçacıklar", "Düşen ışık noktaları", &fx::settings.particles, inner, false);
             ui::ToggleCard("Yıldız çizgileri", "Geçen iz çizgileri", &fx::settings.lines, inner, false);

@@ -266,8 +266,8 @@ namespace icons
 
         case Icon::GitHub:
         {
-            // Gerçek siluet, tools/make_brand_icons.ps1 tarafından derleme zamanında
-            // üçgenlenmiş hâlde. İlkel çizimlerle denendi önce, hepsi hayvan gibi okundu:
+            // Gerçek siluet, markanın SVG işaretinden türetilip üçgenlenmiş hâlde
+            // brandicons:: içinde duruyor. İlkel çizimlerle denendi önce, hepsi hayvan gibi okundu:
             // işaret 20px'te daire ve dikdörtgenlerle taklit edilemeyecek kadar organik.
             const float*   pts = brandicons::kGitHubPoints;
             const unsigned short* tris = brandicons::kGitHubTris;

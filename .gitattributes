@@ -1,0 +1,31 @@
+# Satir sonu politikasi: depoda LF, calisma kopyasinda platformun alisi.
+* text=auto
+
+# Kabuk betikleri Windows'ta calisir; CRLF olarak kalmali.
+*.bat  text eol=crlf
+*.cmd  text eol=crlf
+*.ps1  text eol=crlf
+
+# Ikili varliklar: diff cikarma ve satir sonu donusumu yapilmaz.
+*.png    binary
+*.ttf    binary
+*.ico    binary
+*.exe    binary
+*.obj    binary
+*.lib    binary
+*.dll    binary
+*.zip    binary
+
+# Kaynak ve belge dosyalari metindir.
+*.cpp    text
+*.hpp    text
+*.h      text
+*.md     text
+*.txt    text
+*.yml    text
+*.in     text
+
+# GitHub linguist: vendor edilen ImGui'yi kaynak dil sayma.
+third_party/** linguist-vendored
+src/gui/font_data.cpp linguist-generated
+src/gui/logo_data.cpp linguist-generated
